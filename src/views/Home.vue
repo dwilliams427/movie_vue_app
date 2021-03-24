@@ -4,20 +4,24 @@
     <button v-on:click="createProduct">Create!</button> -->
     <div>
       <h1>Add Movie!</h1>
-      <div v-for="movie in movies" v-bind:key="movie">{{ movie }}</div>
       <input type="text" v-model="title" placeholder="Title" />
-      <input type="text" v-model="name" placeholder="Name" />
-      <input type="text" v-model="description" placeholder="Description" />
-      <input type="text" v-model="price" hint="Price" />
-      <button v-on:click="createmovie">Create New movie</button>
-      <button v-on:click="updatemovie">Update movie</button>
+      <input type="text" v-model="year" placeholder="Year" />
+      <input type="text" v-model="plot" placeholder="plot" />
+      <input type="text" v-model="director" placeholder="director" />
+      <input type="text" v-model="english" placeholder="english" />
+
+      <button v-on:click="createMovies">Create New movie</button>
+      <!-- <button v-on:click="updatemovie">Update Movie</button> -->
     </div>
+
     <div>
       <h1>All Movies!</h1>
       <div>
         <div v-for="movie in movies" v-bind:key="movie">
           <p>
             <b>{{ movie.title }} - {{ movie.year }}</b>
+            <button v-on:click="movieInfo">More Info</button>
+            {{ movie.plot }}
           </p>
           <!-- <img v-bind:src="movie.image_url" v-bind:alt="movie.title" /> -->
         </div>
@@ -45,10 +49,22 @@ export default {
         console.log("all movies: ", this.movies);
       });
     },
-    createmovies: function () {
-      axios.create("/api/movies", params).then((response) => {
-        this.movies = response.data;
-        console.log("all movies: ", this.movies);
+    createMovies: function () {
+      var params = {
+        title: this.title,
+        year: this.year,
+        plot: this.plot,
+        director: this.director,
+        english: this.english,
+      };
+      axios.post("/api/movies", params).then((response) => {
+        console.log("success", response.data);
+      });
+    },
+    movieInfo: function () {
+      axios.get("/api/movies").then((response) => {
+        this.movies.plot = response.data;
+        console.log("Movie plot: ", this.movies.plot);
       });
     },
   },
