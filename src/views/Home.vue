@@ -8,22 +8,48 @@
       <input type="text" v-model="year" placeholder="Year" />
       <input type="text" v-model="plot" placeholder="plot" />
       <input type="text" v-model="director" placeholder="director" />
-      <input type="text" v-model="english" placeholder="english" />
-
+      <!-- <input type="text" v-model="english" placeholder="english" /> -->
       <button v-on:click="createMovies">Create New movie</button>
-      <!-- <button v-on:click="updatemovie">Update Movie</button> -->
     </div>
+
+    <dialog id="movie-details">
+      <form method="dialog">
+        <h1>Movie Info!</h1>
+        <!-- <p>Title: {{ currentMovie.title }}</p>
+        <p>Year: {{ currentMovie.year }}</p>
+        <p>Plot: {{ currentMovie.plot }}</p>
+        <p>Director: {{ currentMovie.director }}</p> -->
+        <p>
+          title:
+          <input type="text" v-model="currentMovie.title" />
+        </p>
+        <p>
+          year:
+          <input type="text" v-model="currentMovie.year" />
+        </p>
+        <p>
+          plot:
+          <input type="text" v-model="currentMovie.plot" />
+        </p>
+        <p>
+          director:
+          <input type="text" v-model="currentMovie.director" />
+        </p>
+        <button v-on:click="updateMovie(currentMovie.id)">Update Movie</button>
+        <button v-on:click="destroyMovie(currentMovie)">Destroy Movie</button>
+        <button>Close</button>
+      </form>
+    </dialog>
 
     <div>
       <h1>All Movies!</h1>
       <div>
-        <div v-for="movie in movies" v-bind:key="movie">
+        <div v-for="movie in movies" v-bind:key="movie.id">
           <p>
             <b>{{ movie.title }} - {{ movie.year }}</b>
-            <button v-on:click="movieInfo">More Info</button>
-            {{ movie.plot }}
+            <button v-on:click="movieInfo(movie)">More Info</button>
           </p>
-          <!-- <img v-bind:src="movie.image_url" v-bind:alt="movie.title" /> -->
+          <p>{{ movie.plot }}</p>
         </div>
       </div>
     </div>
@@ -36,7 +62,11 @@ export default {
   data: function () {
     return {
       movies: [],
-      params: [],
+      newMovieTitle: "",
+      newMovieYear: "",
+      newMoviePlot: "",
+      newMovieDirector: "",
+      currentMovie: {},
     };
   },
   created: function () {
@@ -51,20 +81,46 @@ export default {
     },
     createMovies: function () {
       var params = {
-        title: this.title,
-        year: this.year,
-        plot: this.plot,
-        director: this.director,
-        english: this.english,
+        title: this.newMovieTitle,
+        year: this.newMovieYear,
+        plot: this.newMoviePlot,
+        director: this.newMovieDirector,
+        // english: this.english,
       };
-      axios.post("/api/movies", params).then((response) => {
-        console.log("success", response.data);
-      });
+      axios
+        .post("/api/movies", params)
+        .then((response) => {
+          console.log("success", response.data);
+        })
+        .catch((error) => console.log(error.response));
     },
-    movieInfo: function () {
-      axios.get("/api/movies").then((response) => {
-        this.movies.plot = response.data;
-        console.log("Movie plot: ", this.movies.plot);
+    movieInfo: function (movie) {
+      this.currentMovie = movie;
+      document.querySelector("#movie-details").showModal();
+    },
+    updateMovie: function (movie) {
+      var params = {
+        title: movie.title,
+        year: movie.year,
+        plot: movie.plot,
+        director: movie.director,
+      };
+      axios
+        .patch("/api/movies/" + movie.id, params)
+        .then((response) => {
+          console.log("movie updated", response);
+          console.log("movie id: " + movie.id);
+          this.currentMovie = {};
+        })
+        .catch((error) => {
+          console.log("movies update error", error.response);
+        });
+    },
+    destroyMovie: function (movie) {
+      axios.delete("/api/movies/" + movie.id).then((response) => {
+        console.log("movie destroyed", response);
+        var index = this.movies.indexOf(movie);
+        this.movies.splice(index, 1);
       });
     },
   },
