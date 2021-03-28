@@ -1,13 +1,11 @@
 <template>
   <div class="home">
-    <!-- <h1>New Product!</h1>
-    <button v-on:click="createProduct">Create!</button> -->
     <div>
       <h1>Add Movie!</h1>
-      <input type="text" v-model="title" placeholder="Title" />
-      <input type="text" v-model="year" placeholder="Year" />
-      <input type="text" v-model="plot" placeholder="plot" />
-      <input type="text" v-model="director" placeholder="director" />
+      <input type="text" v-model="newMovieTitle" placeholder="Title" />
+      <input type="text" v-model="newMovieYear" placeholder="Year" />
+      <input type="text" v-model="newMoviePlot" placeholder="plot" />
+      <input type="text" v-model="newMovieDirector" placeholder="director" />
       <!-- <input type="text" v-model="english" placeholder="english" /> -->
       <button v-on:click="createMovies">Create New movie</button>
     </div>
