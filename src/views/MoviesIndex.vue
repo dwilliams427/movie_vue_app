@@ -6,6 +6,29 @@
       <hr class="my-4" />
       <p>See a new world of like maybe 7 movies, all in one website. Woah</p>
     </div>
+    <div>
+      <fieldset>
+        <legend>Choose your favorite movie</legend>
+        <ul>
+          <li>
+            <label for="carrots">{{ movies[0].title }}</label>
+            <input type="checkbox" id="carrots" name="vegetable" value="carrots" checked />
+          </li>
+          <li>
+            <label for="peas">{{ movies[1].title }}</label>
+            <input type="checkbox" id="peas" name="vegetable" value="peas" />
+          </li>
+          <li>
+            <label for="cabbage">{{ movies[2].title }}</label>
+            <input type="checkbox" id="cabbage" name="vegetable" value="cabbage" />
+          </li>
+          <li>
+            <label for="cabbage">{{ movies[3].title }}</label>
+            <input type="checkbox" id="cabbage" name="vegetable" value="cabbage" />
+          </li>
+        </ul>
+      </fieldset>
+    </div>
     Search by title:
     <input v-model="titleFilter" />
     <div v-for="movie in filterBy(movies, titleFilter, 'title')" v-bind:key="movie">
